@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchProductListing } from '../api/listing';
-import type { RequestBody, Response } from '../api/types';
+import type { Price, RequestBody, Response } from '../api/types';
 
 const DEFAULT_PARAMS: RequestBody = {
     query: 'baths',
@@ -8,6 +8,7 @@ const DEFAULT_PARAMS: RequestBody = {
     size: 12,
     sort: 1,
     additionalPages: 0,
+    facets: {},
 };
 
 export const useProductListing = () => {
@@ -19,10 +20,12 @@ export const useProductListing = () => {
     const [error, setError] = useState<string | null>(null);
 
     const setParams = (newParams: Partial<RequestBody>) => {
+        const shouldResetPage =
+            'query' in newParams || 'sort' in newParams || 'facets' in newParams;
         setParamsState(prevParams => ({
             ...prevParams,
             ...newParams,
-            pageNumber: 'query' in newParams || 'sort' in newParams ? 1 : prevParams.pageNumber,
+            pageNumber: shouldResetPage ? 1 : prevParams.pageNumber,
         }));
     };
 
@@ -31,6 +34,51 @@ export const useProductListing = () => {
             ...prevParams,
             pageNumber: page,
         }));
+    };
+
+    const handlePriceFacetChange = (checked: boolean, priceOption: Price) => {
+        if (checked) {
+            setParamsState(prevParams => {
+                const prevFacets = prevParams.facets;
+                const newPriceFacets = prevFacets.prices
+                    ? [...prevFacets.prices, priceOption]
+                    : [priceOption];
+                return {
+                    ...prevParams,
+                    facets: {
+                        ...prevFacets,
+                        prices: newPriceFacets,
+                    },
+                };
+            });
+        } else {
+            setParamsState(prevParams => {
+                const prevFacets = prevParams.facets;
+                const newPriceFacets = prevFacets.prices.filter(
+                    facetOption => facetOption.identifier !== priceOption.identifier,
+                );
+                const nonPriceFacetsEntries = Object.entries(prevFacets).filter(
+                    ([key]) => key !== 'prices',
+                );
+
+                const nonPriceFacets = Object.fromEntries(nonPriceFacetsEntries);
+
+                const newFacets =
+                    prevFacets.prices && newPriceFacets.length
+                        ? {
+                              ...prevFacets,
+                              prices: newPriceFacets,
+                          }
+                        : { ...nonPriceFacets };
+
+                return {
+                    ...prevParams,
+                    facets: {
+                        ...newFacets,
+                    },
+                };
+            });
+        }
     };
 
     useEffect(() => {
@@ -72,5 +120,6 @@ export const useProductListing = () => {
         error,
         setParams,
         handlePageChange,
+        handlePriceFacetChange,
     };
 };

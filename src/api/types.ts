@@ -3,16 +3,21 @@ export type RequestBody = {
     pageNumber: number;
     size: number;
     additionalPages: number;
-    sort: number
-}
+    sort: number;
+    facets: Record<string, FilterOption[]>;
+};
+
+export type SimpleValueFilter = {
+    identifier: string;
+    value: string | boolean;
+};
+
+export type FilterOption = Price | SimpleValueFilter;
 
 export type Price = {
     identifier: string;
-    value: {
-        gte: number;
-        lte: number;
-    };
-}
+    value: PriceRange;
+};
 
 // Response types
 export type Pagination = {
@@ -120,9 +125,5 @@ export type Response = {
     pagination: Pagination;
     facets: Facet[];
     products: Product[];
+    appliedFacets: Record<string, FilterOption[]>;
 };
-
-// o 1 = Recommended
-// o 2 = PriceLowToHigh
-// o 3 = PriceHighToLow
-// o 4 = LargestDiscount
