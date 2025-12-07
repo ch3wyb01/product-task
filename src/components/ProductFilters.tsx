@@ -8,6 +8,8 @@ import {
     FormControlLabel,
     FormGroup,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import type { Facet, FilterOption, Price, PriceRange } from '../api/types';
 
@@ -22,12 +24,14 @@ export const ProductFilters = ({
     onPriceOptionChange,
     appliedFacets,
 }: ProductFiltersProps) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     return (
         <Box component="aside" aria-label="Product Filter Options">
             {facets.map(facet => {
                 if (facet.identifier === 'prices') {
                     return (
-                        <Accordion defaultExpanded key={facet.identifier}>
+                        <Accordion defaultExpanded={!isMobile} key={facet.identifier}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography fontWeight="bold">{facet.displayName}</Typography>
                             </AccordionSummary>

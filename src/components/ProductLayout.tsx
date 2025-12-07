@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Pagination } from '@mui/material';
+import { Box, CircularProgress, Pagination, useMediaQuery, useTheme } from '@mui/material';
 import { useProductListing } from '../hooks/useProductListing';
 import { ProductFilters } from './ProductFilters';
 import { ProductGrid } from './ProductGrid';
@@ -7,6 +7,9 @@ import { SortSelect } from './SortSelect';
 export const ProductLayout = () => {
     const { data, isLoading, error, handlePageChange, params, setParams, handlePriceFacetChange } =
         useProductListing();
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     if (isLoading) return <CircularProgress />;
     if (error) return <div>Error: {error}</div>;
@@ -18,20 +21,36 @@ export const ProductLayout = () => {
 
     return (
         <Box display="flex" flexDirection="column" gap={3}>
-            <Box display="flex" justifyContent="flex-end" px={2}>
+            <Box display="flex" justifyContent={isMobile ? 'space-between' : 'flex-end'} px={2}>
                 <SortSelect
                     sortQuery={params.sort}
                     onSortChange={(sort: number) => setParams({ sort })}
                 />
-            </Box>
-            <Box display="flex" gap={3}>
-                <Box height="200px" width="30%">
+                {isMobile && (
                     <ProductFilters
                         facets={data?.facets || []}
                         onPriceOptionChange={handlePriceFacetChange}
                         appliedFacets={params.facets}
                     />
-                </Box>
+                )}
+            </Box>
+            <Box
+                display="flex"
+                gap={3}
+                // flexDirection={{
+                //     xs: 'column',
+                //     sm: 'row',
+                // }}
+            >
+                {!isMobile && (
+                    <Box width="30%">
+                        <ProductFilters
+                            facets={data?.facets || []}
+                            onPriceOptionChange={handlePriceFacetChange}
+                            appliedFacets={params.facets}
+                        />
+                    </Box>
+                )}
                 <Box display="flex" flexDirection="column" gap={2} width="100%">
                     <ProductGrid products={data?.products || []} />
                     {totalPages > 1 && (
