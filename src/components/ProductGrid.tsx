@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
-import type { Product } from "../api/types";
-import { ProductCard } from "./ProductCard";
+import { Grid } from '@mui/material';
+import type { Product } from '../api/types';
+import { ProductCard } from './ProductCard';
 
 export interface ProductGridProps {
     products: Product[];
@@ -8,20 +8,29 @@ export interface ProductGridProps {
 
 export const ProductGrid = ({ products }: ProductGridProps) => {
     return (
-        <Box
-            component="section"
+        <Grid
+            container
+            spacing={2}
             sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                gap: 2,
-                alignItems: "start",
-                width: "100%",
+                width: '100%',
                 px: 2,
+                margin: '0 auto',
             }}
         >
-            {products.map((p) => (
-                <ProductCard key={p.id} {...p} />
+            {products.map(p => (
+                <Grid
+                    size={{
+                        xs: 12,
+                        sm: 6,
+                        md: 4,
+                        lg: 3,
+                        xl: 2,
+                    }}
+                    key={p.id}
+                >
+                    <ProductCard {...p} />
+                </Grid>
             ))}
-        </Box>
+        </Grid>
     );
-}
+};
