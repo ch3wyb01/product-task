@@ -34,14 +34,7 @@ export const ProductLayout = () => {
                     />
                 )}
             </Box>
-            <Box
-                display="flex"
-                gap={3}
-                // flexDirection={{
-                //     xs: 'column',
-                //     sm: 'row',
-                // }}
-            >
+            <Box display="flex" gap={3}>
                 {!isMobile && (
                     <Box width="30%">
                         <ProductFilters
