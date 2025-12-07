@@ -1,27 +1,28 @@
-import type { RequestBody } from "./types";
+import type { RequestBody } from './types';
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 export const fetchProductListing = async (requestBody: RequestBody) => {
-  if (!API_URL) { throw new Error("API_URL is not defined") }
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!API_URL) {
+        throw new Error('API_URL is not defined');
     }
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
 
-    const data = await response.json();
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    console.log({ data });
-    return data;
-  } catch (error) {
-    console.error({ error });
-    return null;
-  }
-}
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error({ error });
+        return null;
+    }
+};
