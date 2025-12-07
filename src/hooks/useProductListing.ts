@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { fetchProductListing } from "../api/listing";
-import type { RequestBody, Response } from "../api/types";
+import React, { useEffect, useState } from 'react';
+import { fetchProductListing } from '../api/listing';
+import type { RequestBody, Response } from '../api/types';
 
 const DEFAULT_PARAMS: RequestBody = {
     query: 'baths',
@@ -18,21 +18,20 @@ export const useProductListing = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const setParams = (newParams: Partial<Response>) => {
+    const setParams = (newParams: Partial<RequestBody>) => {
         setParamsState(prevParams => ({
             ...prevParams,
             ...newParams,
-            pageNumber: ('query' in newParams || 'sort' in newParams) ? 1 : prevParams.pageNumber,
+            pageNumber: 'query' in newParams || 'sort' in newParams ? 1 : prevParams.pageNumber,
         }));
-    }
+    };
+
     const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
         setParamsState(prevParams => ({
             ...prevParams,
             pageNumber: page,
         }));
-    }
-
-
+    };
 
     useEffect(() => {
         let isMounted = true;
@@ -74,4 +73,4 @@ export const useProductListing = () => {
         setParams,
         handlePageChange,
     };
-}
+};
