@@ -36,7 +36,10 @@ export const ProductInfo = ({ productName, price }: ProductInfoProps) => {
                 fontWeight="
             bold"
             >
-                £{price.priceIncTax} {price.currencyCode}
+                {Intl.NumberFormat('en-GB', {
+                    style: 'currency',
+                    currency: price.currencyCode,
+                }).format(price.priceIncTax)}
             </Typography>
         </Box>
     );
